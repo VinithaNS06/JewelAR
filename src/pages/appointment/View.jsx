@@ -5,53 +5,45 @@ import { useParams, useNavigate } from 'react-router-dom';
 import config from "../../config.json";
 import axios from 'axios';
 
-
-const View = () => {
-    const accesstoken = JSON.parse(localStorage.getItem("user"));
-    const [viewInfo,setViewInfo]=useState([]);
-    const [title,setTitle]=useState('');
+const ViewAppointment = () => {
+    const accesstoken = JSON.parse(localStorage.getItem("user"));   
     const navigate=useNavigate();
     const params = useParams();
-   
-    const getViewData = async () => {
-      let proeditdetails=await axios
-          .get(
-            config.apibaseurl +"/api/schedule/byid/"+params.viewid,
-            {
-              headers: {
-                Authorization: "Bearer " + accesstoken.data.access_token,
-              },
-            }
-          )
-          .then((res) => {
-            setViewInfo(res.data.data);
-            // console.log(res.data.data);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-          proeditdetails =await proeditdetails.json();
-          setTitle(proeditdetails[0].date);
-      };
-      
-      useEffect(() => {
-        getViewData();
-      }, []);
+    useEffect(() => {
+      getAppointmentsView(); 
+    }, [])
 
-      // const getViewData = async()=>{       
-      //   let proeditdetails = await fetch(config.apibaseurl +"/api/schedule/byid/"+params.viewid,{
-      //       method: 'get',
-      //       headers:{              
-      //           'Authorization': 'bearer '+accesstoken.data.access_token
-      //       }   
-      //   });
-      //   proeditdetails = await proeditdetails.json(); 
+    const [username, setusername] = useState("");
+    const [phonenumber,setPhoneNumber]=useState("");
+    const[Email,setEmail]=useState("");
+    const[streetName,setStreetName]=useState("");
+    const[status,setStatus]=useState("")  
+    const[date,setDate] =useState("");
+    const[time,setTime]=useState("");
+    const[productslist,setProducts]=useState([]);
+    const getAppointmentsView = async()=>{       
+      let appointmentdetails = await fetch(config.apibaseurl+"/api/schedule/byid/"+params.viewid,{
+          method: 'get',
+          headers:{              
+              'Authorization': 'bearer '+accesstoken.data.access_token
+          }   
+      });
+      appointmentdetails = await appointmentdetails.json(); 
+      setusername(appointmentdetails.data[0].user_id.name);
+      setPhoneNumber(appointmentdetails.data[0].user_id.phone);
+      setEmail(appointmentdetails.data[0].user_id.email);
+      setStreetName(appointmentdetails.data[0].user_id.streetname);
+      setStatus(appointmentdetails.data[0].schedule_status);
+      setDate(appointmentdetails.data[0].date);
+      setTime(appointmentdetails.data[0].time);
+      getProductvalue(appointmentdetails.data[0].products);
+    }     
 
-      // function getProductvalue(appt) {
-      //   const apptvalue = JSON.parse(appt);
-      //   return apptvalue;
-      // }
-  return (
+    function getProductvalue(appt) {      
+      const apptvalue = JSON.parse(appt);
+      setProducts(apptvalue);
+    }
+    return (
     <>
     
     <div class="min-height-300 bg-primary position-absolute w-100"></div>
@@ -60,7 +52,7 @@ const View = () => {
               <Header />
               <div class="container-fluid py-4">
               <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-8">
               <div class="card mb-4">
                 <div class="card-header pb-3">
                   <div class="row">
@@ -70,7 +62,7 @@ const View = () => {
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-xl-6 col-sm-6 mb-xl-0 mb-4">
+                  <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4">
                       <div class="">
                           <div class="card-body p-3">
                           <div class="row">
@@ -80,19 +72,19 @@ const View = () => {
                                     <table class="table align-items-center mb-0 ">
                                       <tr>
                                         <td>Name</td>
-                                        <td>Vinitha</td>
+                                        <td>{username}</td>
                                       </tr>
                                       <tr>
                                         <td>Phone No</td>
-                                        <td>1234567890</td>
+                                        <td>{phonenumber}</td>
                                       </tr>
                                       <tr>
                                         <td>Email</td>
-                                        <td>test@gmail.com</td>
+                                        <td>{Email}</td>
                                       </tr>
                                       <tr>
                                         <td>Address</td>
-                                        <td>Testing data</td>
+                                        <td>{streetName}</td>
                                       </tr>
 
                                     </table>
@@ -103,7 +95,7 @@ const View = () => {
                       </div>
                   </div>
 
-                  <div class="col-xl-6 col-sm-6 mb-xl-0 mb-4">
+                  <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4">
                       <div class="">
                           <div class="card-body p-3">
                           <div class="row">
@@ -113,15 +105,15 @@ const View = () => {
                                     <table class="table align-items-center mb-0 ">
                                       <tr>
                                         <td>Date</td>
-                                        <td>Vinitha</td>
+                                        <td>{date}</td>
                                       </tr>
                                       <tr>
                                         <td>Time</td>
-                                        <td>1234567890</td>
+                                        <td>{time}</td>
                                       </tr>
                                       <tr>
                                         <td>Status</td>
-                                        <td>Pending</td>
+                                        <td>{status}</td>
                                       </tr>
                                       <tr>
                                         <td colspan="2">&nbsp;</td>
@@ -146,17 +138,66 @@ const View = () => {
                           <th class="text-secondary opacity-7 ps-2">Name</th>
                         </tr>
                       </thead>
+                      
                       <tbody>
-                          <tr>
-                            <td>1</td>
-                            <td>Test</td>
-                            <td>Testsete</td>
+                      {productslist.map((item, index) =>
+                          <tr key={item._id}>
+                            <td>{index + 1}</td>
+                            <td><img src={config.baseurl+item.image} class="avatar avatar-sm me-3" alt={item.name} /></td>
+                            <td>{item.name}</td>
                           </tr>
+                      )}
                       </tbody>
                     </table>
                   </div>
                 </div>
                 
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card mb-4">
+                <div class="card-header pb-3">
+                  <div class="row">
+                    <div class="col-6 d-flex align-items-center">
+                      <h6 class="mb-0">Update Status</h6>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="example-text-input" class="form-control-label">Staff Name</label>
+                        <input class="form-control" type="text" placeholder="" required value="" name="staffName" />
+                      </div>
+                      <div class="form-group">
+                        <label for="example-text-input" class="form-control-label">Comments</label>
+                        <textarea class="form-control" name="stsComments"></textarea>
+                      </div>
+                      <div class="form-group">
+                        <label for="example-text-input" class="form-control-label">Status</label>
+                        <select class="form-control" name="status">
+                          <option>Select Status</option>
+                          <option >Confirmed</option>
+                          <option>Rejected</option>
+                          <option>Cancelled</option>
+                          <option>Completed</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="text-end">
+                      <button
+                        type="button"
+                        class="btn btn-primary btn-sm ms-auto mt-5"
+                      >
+                        Submit
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -167,4 +208,4 @@ const View = () => {
   )
 }
 
-export default View
+export default ViewAppointment

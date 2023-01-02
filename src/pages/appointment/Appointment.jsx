@@ -72,7 +72,7 @@ const Appoinment = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {appointmentsInfo.map((item, index) => (
+                        {appointmentsInfo.map((item, index) =>
                           <tr key={item._id}>
                             <td>{index + 1}</td>
                             <td>
@@ -128,79 +128,20 @@ const Appoinment = () => {
                             </td>
                             <td>
                               <div class="ms-auto">
-                              {/* <a href={'/appoinment/viewid/'+item._id} class="btn btn-link text-dark px-3 mb-0"  ><i class="fa fa-eye-alt text-dark me-2" aria-hidden="true"></i>View</a> */}
-                                <a
-                                  class="btn btn-link text-dark px-3 mb-0"
-                                  onClick={() =>
-                                    setAppointmentsInfo(navigate("view"))
-                                  }
-                                >
-                                  <i
-                                    class="fa fa-eye text-dark me-2"
-                                    aria-hidden="true"
-                                  ></i>
-                                  View
-                                </a>
+                              <a href={'/appointment/view/'+item._id} class="btn btn-link text-dark px-3 mb-0"  ><i class="fa fa-eye-alt text-dark me-2" aria-hidden="true"></i>View</a>
+                                
                               </div>
                             </td>
                             
                           </tr>
-                        ))}
+                        )}
                       </tbody>
                     </table>
                   </div>
                 </div>
               </div>
             </div>
-            {/* <div class="col-md-4">
-              <div class="card mb-4">
-                <div class="card-header pb-3">
-                  <div class="row">
-                    <div class="col-6 d-flex align-items-center">
-                      <h6 class="mb-0">View</h6>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-md-12"></div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-12">
-                      <div class="form-group">
-                        <label
-                          for="example-text-input"
-                          class="form-control-label"
-                        ></label>
-                        <textarea class="form-control" rows="5"></textarea>
-                        <span class="text-danger text-gradient text-xs text-secondary">
-                          Enter the Status
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="text-end d-flex">
-                      <button
-                        type="button"
-                        
-                        class="btn btn-success btn-sm ms-auto mt-5"
-                      >
-                        Accept
-                      </button>
-                      <button
-                        type="button"
-                    
-                        class="btn btn-danger btn-sm ms-auto mt-5"
-                      >
-                        Reject
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> */}
+            
           </div>
         </div>
       </main>
