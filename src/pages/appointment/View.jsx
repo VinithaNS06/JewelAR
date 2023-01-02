@@ -1,9 +1,10 @@
 import React,{useState,useEffect} from 'react'
-import Sidebar from "../../components/sidebar/Sidebar";
+
 import Header from "../../components/headerbar/Header";
 import { useParams, useNavigate } from 'react-router-dom';
 import config from "../../config.json";
-import axios from 'axios';
+// import axios from 'axios';
+import Sidebar from '../../components/sidebar/Sidebar';
 
 const ViewAppointment = () => {
     const accesstoken = JSON.parse(localStorage.getItem("user"));   
@@ -21,6 +22,7 @@ const ViewAppointment = () => {
     const[date,setDate] =useState("");
     const[time,setTime]=useState("");
     const[productslist,setProducts]=useState([]);
+    const[comments,setComments]=useState("");
     const getAppointmentsView = async()=>{       
       let appointmentdetails = await fetch(config.apibaseurl+"/api/schedule/byid/"+params.viewid,{
           method: 'get',
@@ -128,7 +130,7 @@ const ViewAppointment = () => {
                   </div>
                 </div> 
                 <div class="card-body px-0 pt-0 pb-2">
-                <p class="text-sm mb-0 text-uppercase font-weight-bold pl-2">Product Details</p>
+                <p class="text-sm mb-0 text-uppercase font-weight-bold pl-2"> Product Details</p>
                   <div class="table-responsive p-5">
                     <table class="table align-items-center mb-0 ">
                       <thead>
@@ -173,7 +175,8 @@ const ViewAppointment = () => {
                       </div>
                       <div class="form-group">
                         <label for="example-text-input" class="form-control-label">Comments</label>
-                        <textarea class="form-control" name="stsComments"></textarea>
+                        <textarea class="form-control"name="stsComments"></textarea>
+                        
                       </div>
                       <div class="form-group">
                         <label for="example-text-input" class="form-control-label">Status</label>
