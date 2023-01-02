@@ -3,17 +3,15 @@ import React,{useState,useEffect} from 'react'
 import Header from "../../components/headerbar/Header";
 import { useParams, useNavigate } from 'react-router-dom';
 import config from "../../config.json";
-// import axios from 'axios';
+import axios from 'axios';
 import Sidebar from '../../components/sidebar/Sidebar';
 
 const ViewAppointment = () => {
     const accesstoken = JSON.parse(localStorage.getItem("user"));   
     const navigate=useNavigate();
     const params = useParams();
-    useEffect(() => {
-      getAppointmentsView(); 
-    }, [])
-
+    
+    
     const [username, setusername] = useState("");
     const [phonenumber,setPhoneNumber]=useState("");
     const[Email,setEmail]=useState("");
@@ -23,6 +21,22 @@ const ViewAppointment = () => {
     const[time,setTime]=useState("");
     const[productslist,setProducts]=useState([]);
     const[comments,setComments]=useState("");
+    const[staffInfo,setStaffInfo]=useState([]);
+    const[staffName,setStaffName]=useState("");
+   
+    useEffect(() => {
+      getStaffData();
+      getAppointmentsView(); 
+    }, [])
+    const getStaffData=async()=>{
+      let staffList=await fetch(config.apiurl+'/api/staff/getstaff',{
+        method:'get',
+      });
+      staffList=await staffList.json(); 
+      setStaffName(staffList.data.results.staffname)
+    }
+   
+    // console.log(staffList);
     const getAppointmentsView = async()=>{       
       let appointmentdetails = await fetch(config.apibaseurl+"/api/schedule/byid/"+params.viewid,{
           method: 'get',
@@ -30,7 +44,12 @@ const ViewAppointment = () => {
               'Authorization': 'bearer '+accesstoken.data.access_token
           }   
       });
-      appointmentdetails = await appointmentdetails.json(); 
+      
+      
+    
+      
+      appointmentdetails = await appointmentdetails.json();
+     
       setusername(appointmentdetails.data[0].user_id.name);
       setPhoneNumber(appointmentdetails.data[0].user_id.phone);
       setEmail(appointmentdetails.data[0].user_id.email);
@@ -39,8 +58,10 @@ const ViewAppointment = () => {
       setDate(appointmentdetails.data[0].date);
       setTime(appointmentdetails.data[0].time);
       getProductvalue(appointmentdetails.data[0].products);
+      
     }     
-
+   
+    
     function getProductvalue(appt) {      
       const apptvalue = JSON.parse(appt);
       setProducts(apptvalue);
@@ -171,6 +192,13 @@ const ViewAppointment = () => {
                     <div class="col-md-12">
                       <div class="form-group">
                         <label for="example-text-input" class="form-control-label">Staff Name</label>
+                        {/* <tbody>
+                          {staffInfo.map((item,index)=>
+                             <tr key={item._id}>
+                              <td>{index + 1}</td>
+                             </tr>
+                          )}
+                        </tbody> */}
                         <input class="form-control" type="text" placeholder="" required value="" name="staffName" />
                       </div>
                       <div class="form-group">
@@ -182,6 +210,8 @@ const ViewAppointment = () => {
                         <label for="example-text-input" class="form-control-label">Status</label>
                         <select class="form-control" name="status">
                           <option>Select Status</option>
+                          <option >Accept</option>
+                          <option >Reject</option>
                           <option >Confirmed</option>
                           <option>Rejected</option>
                           <option>Cancelled</option>

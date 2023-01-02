@@ -7,6 +7,7 @@ import axios from "axios";
 const Appoinment = () => {
   const accesstoken = JSON.parse(localStorage.getItem("user"));
   const [appointmentsInfo, setAppointmentsInfo] = useState([]);
+ 
 
   const navigate = useNavigate();
 
@@ -29,6 +30,8 @@ const Appoinment = () => {
         console.log(err);
       });
   };
+
+  
   useEffect(() => {
     getAppointmentsData();
   }, []);
@@ -118,11 +121,7 @@ const Appoinment = () => {
                                       {item.schedule_status}
                                     </span>
                                   </p>
-                                  {/* <p class="text-xs mb-2">
-                                    <span class="text-dark font-weight-bold ms-sm-2">
-                                      {item.status}
-                                    </span>
-                                  </p> */}
+                                  
                                 </div>
                               </div>
                             </td>
