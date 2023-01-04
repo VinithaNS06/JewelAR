@@ -1,5 +1,6 @@
 import React,{useState,useEffect} from 'react'
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Header from "../../components/headerbar/Header";
 import { useParams, useNavigate } from 'react-router-dom';
 import config from "../../config.json";
@@ -21,22 +22,33 @@ const ViewAppointment = () => {
     const[time,setTime]=useState("");
     const[productslist,setProducts]=useState([]);
     const[comments,setComments]=useState("");
-    const[staffInfo,setStaffInfo]=useState([]);
     const[staffName,setStaffName]=useState("");
-   
+    const[staffValue,setStaffValue]=useState("");
+    const[staffListInfo,setStaffListInfo]=useState([]);
+    
     useEffect(() => {
       getStaffData();
       getAppointmentsView(); 
+      
+
     }, [])
     const getStaffData=async()=>{
       let staffList=await fetch(config.apiurl+'/api/staff/getstaff',{
-        method:'get',
+        method:"get",
       });
       staffList=await staffList.json(); 
-      setStaffName(staffList.data.results.staffname)
+      setStaffListInfo(staffList.data.results);
+      // console.log(staffList.data.results);
     }
-   
-    // console.log(staffList);
+
+const handleStaffsubmit=()=>{
+  navigate('/appointment')
+}
+const showToastMessage = () => {
+  toast.success('Update Status!', {
+      position: toast.POSITION.TOP_CENTER
+  });
+};
     const getAppointmentsView = async()=>{       
       let appointmentdetails = await fetch(config.apibaseurl+"/api/schedule/byid/"+params.viewid,{
           method: 'get',
@@ -44,12 +56,7 @@ const ViewAppointment = () => {
               'Authorization': 'bearer '+accesstoken.data.access_token
           }   
       });
-      
-      
-    
-      
       appointmentdetails = await appointmentdetails.json();
-     
       setusername(appointmentdetails.data[0].user_id.name);
       setPhoneNumber(appointmentdetails.data[0].user_id.phone);
       setEmail(appointmentdetails.data[0].user_id.email);
@@ -59,14 +66,14 @@ const ViewAppointment = () => {
       setTime(appointmentdetails.data[0].time);
       getProductvalue(appointmentdetails.data[0].products);
       
-    }     
-   
-    
+    } 
+      
     function getProductvalue(appt) {      
       const apptvalue = JSON.parse(appt);
       setProducts(apptvalue);
     }
-    return (
+    
+  return (
     <>
     
     <div class="min-height-300 bg-primary position-absolute w-100"></div>
@@ -191,19 +198,21 @@ const ViewAppointment = () => {
                   <div class="row">
                     <div class="col-md-12">
                       <div class="form-group">
-                        <label for="example-text-input" class="form-control-label">Staff Name</label>
-                        {/* <tbody>
-                          {staffInfo.map((item,index)=>
-                             <tr key={item._id}>
-                              <td>{index + 1}</td>
-                             </tr>
-                          )}
-                        </tbody> */}
-                        <input class="form-control" type="text" placeholder="" required value="" name="staffName" />
-                      </div>
-                      <div class="form-group">
-                        <label for="example-text-input" class="form-control-label">Comments</label>
-                        <textarea class="form-control"name="stsComments"></textarea>
+                        <label for="example-text-input" required="" class="form-control-label">Staff</label>
+                             <select className="form-control" value={staffValue} onChange={e=>setStaffValue(e.target.value)}>
+                             <option>Choose Staff Name</option>
+                           {staffListInfo.map(stf=> (
+                    <option value={stf._id} key={stf._id} >{stf.name}- {stf.staffid}</option>
+                    ))
+                  } 
+               </select>
+                      
+
+         
+                        </div> 
+                        <div class="form-group">
+                        <label for="example-text-input" required="" class="form-control-label">Comments</label>
+                        <textarea class="form-control" name="stsComments"></textarea>
                         
                       </div>
                       <div class="form-group">
@@ -213,32 +222,37 @@ const ViewAppointment = () => {
                           <option >Accept</option>
                           <option >Reject</option>
                           <option >Confirmed</option>
-                          <option>Rejected</option>
                           <option>Cancelled</option>
                           <option>Completed</option>
-                        </select>
+                          </select>
                       </div>
                     </div>
                   </div>
+                        
                   <div class="row">
                     <div class="text-end">
-                      <button
+                    <button
                         type="button"
                         class="btn btn-primary btn-sm ms-auto mt-5"
+                        onClick={showToastMessage && handleStaffsubmit}
                       >
                         Submit
-                      </button>
-                    </div>
+                    </button>
+                  </div>
                   </div>
                 </div>
               </div>
             </div>
-
-              </div>
+            </div>
               </div>
             </main>
     </>
   )
 }
 
+                       
+                        
+                      
+                      
+       
 export default ViewAppointment

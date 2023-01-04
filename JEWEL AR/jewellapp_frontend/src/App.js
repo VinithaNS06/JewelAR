@@ -14,8 +14,10 @@ import Store from "./pages/store/Store";
 import Register from "./pages/register/Register";
 import Appointment from './pages/appointment/Appointment';
 import ViewAppointment from './pages/appointment/View';
-
+import Staff from './pages/staff/Staff';
 import { BrowserRouter, Routes, Route, Link  } from "react-router-dom";
+import AddStaff from './pages/staff/addstaff';
+import StaffEdit from './pages/staff/editstaff';
 
 function App() {
   return (
@@ -37,6 +39,11 @@ function App() {
             <Route path="store" element={<Store />} />
             <Route path="appointment" element={<Appointment/>}/>
             <Route path="appointment/view/:viewid" element={<ViewAppointment/>}/>
+            <Route path="staff" element={<Staff/>}/>
+            <Route path="staff/add" element={<AddStaff/>}/>
+            <Route path="staff/edit" element={<StaffEdit/>}/>
+            <Route path="staff/edit/:editid" element={<StaffEdit/>}/>
+           
           </Route>
         </Routes>
       </BrowserRouter>

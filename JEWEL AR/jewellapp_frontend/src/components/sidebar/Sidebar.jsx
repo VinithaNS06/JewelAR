@@ -73,7 +73,15 @@ const Sidebar =() => {
                     <span class="nav-link-text ms-1">Appointment</span>
                 </Link>
                 </li>
-                
+                <li class="nav-item">
+                <Link class="nav-link m-0" to="/staff">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                    <i class="ni ni-single-02 text-warning text-sm opacity-10"></i>
+                    
+                    </div>
+                    <span class="nav-link-text ms-1">Staff</span>
+                </Link>
+                </li>
             </ul>
             </div>
         </aside>
